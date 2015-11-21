@@ -52,3 +52,10 @@ This example comes from the included testcr.cpp program:
 
 If you need to simulate a dual core MCU, you can provide two instances of CR_Mutex and
 set up additional coroutines that would only run on the 2nd core.
+
+## Preemptive Processing
+
+If you need to switch to preemptive scheduling, this can now be done by supplying
+the CR_Mutex constructor a true argument:
+
+    CR_Mutex cr_mutex(true);  // Enable preemptive scheduling
