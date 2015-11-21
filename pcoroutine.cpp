@@ -15,7 +15,7 @@
 // Coroutine Mutex Class CR_Mutex
 //////////////////////////////////////////////////////////////////////
 
-CR_Mutex::CR_Mutex() {
+CR_Mutex::CR_Mutex(bool preemptive_sched) : preemptivef(preemptive_sched) {
 	int rc;
 
 	rc = pthread_mutex_init(&mutex,0);
@@ -58,6 +58,9 @@ CR_Mutex::release() {
 
 void
 CR_Mutex::yield() {
+	if ( preemptivef )
+		return;
+
 	pthread_t self = pthread_self();
 	size_t ux;
 	int rc;
@@ -132,9 +135,11 @@ PCoroutine::~PCoroutine() {
 
 void
 PCoroutine::start() {
-	mutex.yield();
+	if ( !mutex.is_preemptive() )
+		mutex.yield();
 	this->func(this->arg);
-	mutex.release();
+	if ( !mutex.is_preemptive() )
+		mutex.release();
 }	
 
 void *

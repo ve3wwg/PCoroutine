@@ -39,6 +39,7 @@ class PCoroutine;	// Forward declaration
 class CR_Mutex {
 	friend class PCoroutine;
 
+	bool		preemptivef;
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
 	pthread_t	exec;
@@ -46,8 +47,10 @@ class CR_Mutex {
 
 	void release();	// Used by exiting threads only
 
-public:	CR_Mutex();
+public:	CR_Mutex(bool preemptive_sched=false);
 	~CR_Mutex();
+
+	bool is_preemptive() const { return preemptivef; }
 
 	void yield();
 };
